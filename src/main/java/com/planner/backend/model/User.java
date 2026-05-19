@@ -28,4 +28,16 @@ public class User {
 
     @Column(columnDefinition = "TEXT")
     private String completedWorks; // Plancıların yaptığı işler
+
+    @Column(columnDefinition = "TEXT")
+    private String bio; // Kısa tanıtım / özgeçmiş
+
+    @Column(columnDefinition = "TEXT")
+    private String skills; // Uzmanlık alanları (virgülle ayrılmış)
+
+    @Column
+    private String location; // Şehir / Konum
+
+    @Column
+    private String phone; // İletişim numarası
 }
