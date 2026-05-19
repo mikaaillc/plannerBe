@@ -22,6 +22,14 @@ public class DataLoader implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         if (userRepository.count() == 0) {
+            // ---- ADMIN OLUŞTUR ----
+            userRepository.save(User.builder()
+                    .username("admin").password("admin")
+                    .fullName("Sistem Yöneticisi")
+                    .role("ROLE_ADMIN")
+                    .isPaid(true)
+                    .subscriptionType("ANNUAL")
+                    .build());
 
             // ---- PLANCILARI OLUŞTUR ----
             User planner1 = userRepository.save(User.builder()
@@ -33,6 +41,8 @@ public class DataLoader implements CommandLineRunner {
                     .location("İstanbul, Türkiye")
                     .phone("+90 532 111 22 33")
                     .completedWorks("• 2023 – Kartal Sahil Kentsel Dönüşüm Projesi (8.500 konut, İstanbul)\n• 2022 – Başakşehir Yeni Mahalle İmar Planı Revizyonu (12.000 dönüm)\n• 2021 – Kadıköy Tarihi Çarşı Koruma Alanı Planlaması\n• 2020 – Ataşehir TOKİ Konut Alanı Master Planı")
+                    .isPaid(true)
+                    .subscriptionType("ANNUAL")
                     .build());
 
             User planner2 = userRepository.save(User.builder()
@@ -44,6 +54,8 @@ public class DataLoader implements CommandLineRunner {
                     .location("Ankara, Türkiye")
                     .phone("+90 533 222 44 55")
                     .completedWorks("• 2024 – Ankara Çankaya Bisiklet Yolu Entegrasyon Projesi\n• 2023 – Keçiören Yeşil Koridor ve Park Ağı Planlaması\n• 2022 – Mamak Bölgesi Kentsel Yenileme Master Planı")
+                    .isPaid(false)
+                    .subscriptionType("FREE")
                     .build());
 
             // ---- KURUMLARI OLUŞTUR ----
@@ -56,6 +68,8 @@ public class DataLoader implements CommandLineRunner {
                     .location("İstanbul, Türkiye")
                     .phone("+90 212 555 66 77")
                     .completedWorks("• Kartal Marina Rezidans (1.200 konut)\n• Ataşehir AVM ve Ofis Kompleksi\n• Başakşehir Toplu Konut Projesi (3.500 konut)")
+                    .isPaid(true)
+                    .subscriptionType("MONTHLY")
                     .build());
 
             User entity2 = userRepository.save(User.builder()
@@ -66,6 +80,8 @@ public class DataLoader implements CommandLineRunner {
                     .skills("Kentsel Altyapı, Belediye Projeleri, Dönüşüm, Ulaşım")
                     .location("Ankara, Türkiye")
                     .phone("+90 312 444 55 66")
+                    .isPaid(false)
+                    .subscriptionType("FREE")
                     .build());
 
             // ---- ÖRNEK TEKLİFLER OLUŞTUR ----
