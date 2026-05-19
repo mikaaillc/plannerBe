@@ -34,6 +34,14 @@ public class OfferController {
             return ResponseEntity.badRequest().body("Invalid sender or receiver ID");
         }
 
+        if (!sender.isPaid()) {
+            return ResponseEntity.badRequest().body("Ödeme yapmayan kullanıcılar teklif veremez.");
+        }
+
+        if ("ROLE_ENTITY".equals(receiver.getRole()) && !receiver.isPaid()) {
+            return ResponseEntity.badRequest().body("Ödeme yapmayan tüzel kişiler teklif alamaz.");
+        }
+
         Offer offer = Offer.builder()
                 .title(request.getTitle())
                 .description(request.getDescription())

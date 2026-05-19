@@ -40,4 +40,10 @@ public class User {
 
     @Column
     private String phone; // İletişim numarası
+
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private boolean isPaid = false;
+
+    @Column
+    private String subscriptionType = "FREE"; // FREE, MONTHLY, ANNUAL
 }

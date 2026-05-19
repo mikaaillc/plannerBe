@@ -37,6 +37,14 @@ public class UserController {
             return ResponseEntity.ok(userRepository.save(user));
         }).orElse(ResponseEntity.notFound().build());
     }
+    @PostMapping("/{id}/subscribe")
+    public ResponseEntity<?> subscribe(@PathVariable Long id, @RequestBody SubscriptionRequest request) {
+        return userRepository.findById(id).map(user -> {
+            user.setPaid(true);
+            user.setSubscriptionType(request.getType());
+            return ResponseEntity.ok(userRepository.save(user));
+        }).orElse(ResponseEntity.notFound().build());
+    }
 }
 
 @Data
@@ -47,4 +55,9 @@ class UpdateProfileRequest {
     private String completedWorks;
     private String location;
     private String phone;
+}
+
+@Data
+class SubscriptionRequest {
+    private String type;
 }
