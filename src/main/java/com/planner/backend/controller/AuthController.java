@@ -23,10 +23,35 @@ public class AuthController {
         }
         return ResponseEntity.status(401).body("Invalid credentials");
     }
+
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
+        if (userRepository.findByUsername(request.getUsername()).isPresent()) {
+            return ResponseEntity.badRequest().body("Username already exists");
+        }
+        User user = User.builder()
+                .username(request.getUsername())
+                .password(request.getPassword())
+                .fullName(request.getFullName())
+                .role(request.getRole())
+                .completedWorks(request.getCompletedWorks())
+                .build();
+        userRepository.save(user);
+        return ResponseEntity.ok(user);
+    }
 }
 
 @Data
 class LoginRequest {
     private String username;
     private String password;
+}
+
+@Data
+class RegisterRequest {
+    private String username;
+    private String password;
+    private String fullName;
+    private String role;
+    private String completedWorks;
 }

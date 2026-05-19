@@ -25,4 +25,7 @@ public class User {
 
     @Column(nullable = false)
     private String role; // "ROLE_PLANNER" or "ROLE_ENTITY"
+
+    @Column(columnDefinition = "TEXT")
+    private String completedWorks; // Plancıların yaptığı işler
 }
