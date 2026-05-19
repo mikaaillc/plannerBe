@@ -96,6 +96,15 @@ public class DataLoader implements CommandLineRunner {
                     .receiver(planner2)
                     .build());
 
+            Offer offer4 = offerRepository.save(Offer.builder()
+                    .title("Kentsel Yenileme ve Ulaşım Entegrasyon Planı")
+                    .description("Mevcut banliyö hattı istasyon çevresinin yaya ve bisiklet odaklı erişilebilirlik ilkelerine göre yeniden planlanması ve kentsel yenileme projesinin hazırlanması.")
+                    .proposedPrice(280000.0)
+                    .status("ACCEPTED")
+                    .sender(entity2)
+                    .receiver(planner1)
+                    .build());
+
             // ---- ÖRNEK YORUMLAR OLUŞTUR ----
             commentRepository.save(Comment.builder()
                     .offer(offer1)
