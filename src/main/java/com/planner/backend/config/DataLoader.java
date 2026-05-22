@@ -1,9 +1,11 @@
 package com.planner.backend.config;
 
 import com.planner.backend.model.Comment;
+import com.planner.backend.model.Job;
 import com.planner.backend.model.Offer;
 import com.planner.backend.model.User;
 import com.planner.backend.repository.CommentRepository;
+import com.planner.backend.repository.JobRepository;
 import com.planner.backend.repository.OfferRepository;
 import com.planner.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,7 @@ import java.time.LocalDateTime;
 public class DataLoader implements CommandLineRunner {
 
     @Autowired private UserRepository userRepository;
+    @Autowired private JobRepository jobRepository;
     @Autowired private OfferRepository offerRepository;
     @Autowired private CommentRepository commentRepository;
 
@@ -36,6 +39,7 @@ public class DataLoader implements CommandLineRunner {
                     .username("planner1").password("pass")
                     .fullName("Ahmet Yılmaz")
                     .role("ROLE_PLANNER")
+                    .karne("A")
                     .bio("15 yıllık şehir plancılığı deneyimine sahip, özellikle kentsel dönüşüm ve imar planlaması alanlarında uzmanlaşmış bir profesyonelim.")
                     .skills("Kentsel Dönüşüm, İmar Planlaması, CBS, Çevre Planlama, 3D Modelleme")
                     .location("İstanbul, Türkiye")
@@ -49,6 +53,7 @@ public class DataLoader implements CommandLineRunner {
                     .username("planner2").password("pass")
                     .fullName("Ayşe Kaya")
                     .role("ROLE_PLANNER")
+                    .karne("B")
                     .bio("Şehir ve bölge planlama alanında doktora derecesine sahip, sürdürülebilir kentleşme ve yeşil altyapı konularında uzman bir akademisyen-pratisyenim.")
                     .skills("Sürdürülebilir Kentleşme, Yeşil Altyapı, Ulaşım Planlaması, Coğrafi Analiz")
                     .location("Ankara, Türkiye")
@@ -63,6 +68,7 @@ public class DataLoader implements CommandLineRunner {
                     .username("entity1").password("pass")
                     .fullName("ABC İnşaat ve Yapı A.Ş.")
                     .role("ROLE_ENTITY")
+                    .entityType("TUZEL")
                     .bio("1998 yılında kurulan firmamız, Türkiye genelinde 200'den fazla projeyi başarıyla tamamlamış, sektörün önde gelen inşaat ve gayrimenkul geliştirme şirketlerinden biridir.")
                     .skills("Konut Geliştirme, Kentsel Dönüşüm, Ticari Yapılar, Altyapı")
                     .location("İstanbul, Türkiye")
@@ -76,6 +82,7 @@ public class DataLoader implements CommandLineRunner {
                     .username("entity2").password("pass")
                     .fullName("Belediye İmar ve Geliştirme A.Ş.")
                     .role("ROLE_ENTITY")
+                    .entityType("KAMU")
                     .bio("Kamu kurumlarına bağlı bir proje geliştirme şirketi olarak, şehrin geleceğini şekillendiren büyük ölçekli kentsel dönüşüm ve altyapı projelerini hayata geçiriyoruz.")
                     .skills("Kentsel Altyapı, Belediye Projeleri, Dönüşüm, Ulaşım")
                     .location("Ankara, Türkiye")
@@ -84,41 +91,82 @@ public class DataLoader implements CommandLineRunner {
                     .subscriptionType("FREE")
                     .build());
 
+            // ---- İŞ (JOB) OLUŞTUR ----
+            Job job1 = jobRepository.save(Job.builder()
+                    .title("Kartal İlçesi Kuzey Bölgesi İmar Planı Revizyonu")
+                    .description("İstanbul Kartal ilçesinin kuzey bölgesinde yer alan yaklaşık 5.000 dönümlük alanın 1/5000 ölçekli nazım imar planı ve 1/1000 ölçekli uygulama imar planı hazırlanması işi.")
+                    .jobType("PLANLAMA")
+                    .minKarne("B")
+                    .status("OPEN")
+                    .creator(entity1)
+                    .build());
+                    
+            Job job2 = jobRepository.save(Job.builder()
+                    .title("Sürdürülebilir Yaya Bölgesi Planlaması – Çankaya Merkez")
+                    .description("Ankara Çankaya ilçesi merkez alanında yaya bölgesine dönüştürülmesi için gerekli planlama çalışması.")
+                    .jobType("DANIŞMANLIK")
+                    .detailedInfo("Ada/Parsel: 1234/56")
+                    .priceRangeMin(150000.0)
+                    .priceRangeMax(250000.0)
+                    .minKarne("C")
+                    .status("OPEN")
+                    .creator(entity2)
+                    .build());
+
+            Job job3 = jobRepository.save(Job.builder()
+                    .title("Yeşil Altyapı ve Parklar Ağı Master Planı")
+                    .description("İlçe genelinde toplam 12 parkın birbirine bağlandığı yeşil koridor sisteminin planlanması.")
+                    .jobType("PLANLAMA")
+                    .status("OPEN")
+                    .creator(entity1)
+                    .build());
+
+            Job job4 = jobRepository.save(Job.builder()
+                    .title("Kentsel Yenileme ve Ulaşım Entegrasyon Planı")
+                    .description("Mevcut banliyö hattı istasyon çevresinin yeniden planlanması.")
+                    .jobType("DANIŞMANLIK")
+                    .priceRangeMin(200000.0)
+                    .priceRangeMax(300000.0)
+                    .status("OPEN")
+                    .creator(entity2)
+                    .build());
+
             // ---- ÖRNEK TEKLİFLER OLUŞTUR ----
             Offer offer1 = offerRepository.save(Offer.builder()
-                    .title("Kartal İlçesi Kuzey Bölgesi İmar Planı Revizyonu")
-                    .description("İstanbul Kartal ilçesinin kuzey bölgesinde yer alan yaklaşık 5.000 dönümlük alanın 1/5000 ölçekli nazım imar planı ve 1/1000 ölçekli uygulama imar planı hazırlanması işi.\n\nBeklentiler:\n- Mevcut yapı stoğunun analizinin yapılması\n- Yeni yapılaşma koşullarının belirlenmesi\n- Yeşil alan ve sosyal donatı standartlarına uyulması\n- 6 ay içinde teslim edilmesi")
+                    .title("Kartal Projesi İçin Teklifim")
+                    .description("Belirtilen işi 6 ay içinde tamamlayabilirim.")
                     .proposedPrice(450000.0)
                     .status("PENDING")
-                    .sender(entity1)
-                    .receiver(planner1)
+                    .sender(planner1)
+                    .job(job1)
                     .build());
 
             Offer offer2 = offerRepository.save(Offer.builder()
-                    .title("Sürdürülebilir Yaya Bölgesi Planlaması – Çankaya Merkez")
-                    .description("Ankara Çankaya ilçesi merkez alanında yaklaşık 800 metre uzunluğundaki ticaret aksının araç trafiğine kapatılarak yaya bölgesine dönüştürülmesi için gerekli planlama, peyzaj ve altyapı tasarım çalışması.")
+                    .title("Çankaya Yaya Bölgesi Planlaması")
+                    .description("Daha önce benzer yaya yolu planlamaları yaptım, bu bütçeye uygun olarak yapabiliriz.")
                     .proposedPrice(180000.0)
                     .status("NEGOTIATING")
-                    .sender(entity2)
-                    .receiver(planner2)
+                    .sender(planner2)
+                    .job(job2)
                     .build());
 
             Offer offer3 = offerRepository.save(Offer.builder()
-                    .title("Yeşil Altyapı ve Parklar Ağı Master Planı")
-                    .description("İlçe genelinde toplam 12 parkın birbirine bağlandığı yeşil koridor sisteminin planlanması ve tasarımı. Bisiklet yolları, yürüyüş güzergahları ve ekosistem hizmetleri göz önünde bulundurularak hazırlanacak.")
+                    .title("Yeşil Altyapı Planı - Teklif")
+                    .description("Tüm süreçleri C ve D grubu partnerlerimle beraber yöneteceğiz.")
+                    .partnerKarnes("C, D")
                     .proposedPrice(320000.0)
                     .status("ACCEPTED")
-                    .sender(entity1)
-                    .receiver(planner2)
+                    .sender(planner2)
+                    .job(job3)
                     .build());
 
             Offer offer4 = offerRepository.save(Offer.builder()
-                    .title("Kentsel Yenileme ve Ulaşım Entegrasyon Planı")
-                    .description("Mevcut banliyö hattı istasyon çevresinin yaya ve bisiklet odaklı erişilebilirlik ilkelerine göre yeniden planlanması ve kentsel yenileme projesinin hazırlanması.")
+                    .title("Ulaşım Entegrasyon Danışmanlığı")
+                    .description("İlgili bölgede tüm ulaşım simülasyonlarını sağlayabilirim.")
                     .proposedPrice(280000.0)
                     .status("ACCEPTED")
-                    .sender(entity2)
-                    .receiver(planner1)
+                    .sender(planner1)
+                    .job(job4)
                     .build());
 
             // ---- ÖRNEK YORUMLAR OLUŞTUR ----
@@ -159,3 +207,4 @@ public class DataLoader implements CommandLineRunner {
         }
     }
 }
+
