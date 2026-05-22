@@ -38,7 +38,7 @@ public class ChatbotController {
             return ResponseEntity.status(500).body(Map.of("response", "API key not configured. Please configure gemini.api.key"));
         }
 
-        String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.0-pro:generateContent?key=" + geminiApiKey;
+        String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=" + geminiApiKey;
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
