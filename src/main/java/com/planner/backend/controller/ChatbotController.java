@@ -47,7 +47,7 @@ public class ChatbotController {
         // Escape JSON properly
         String safeMessage = request.getMessage().replace("\"", "\\\"").replace("\n", "\\n");
         String requestBody = "{\n" +
-                "  \"model\": \"llama3-8b-8192\",\n" +
+                "  \"model\": \"llama-3.1-8b-instant\",\n" +
                 "  \"messages\": [\n" +
                 "    {\n" +
                 "      \"role\": \"system\",\n" +
