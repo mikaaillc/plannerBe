@@ -21,8 +21,8 @@ import java.util.Map;
 @RequestMapping("/api/chat")
 public class ChatbotController {
 
-    @Value("${gemini.api.key:YOUR_API_KEY}")
-    private String geminiApiKey;
+    @Value("${openai.api.key:YOUR_API_KEY}")
+    private String openAiApiKey;
 
     @Autowired
     private UserRepository userRepository;
@@ -34,39 +34,51 @@ public class ChatbotController {
 
     @PostMapping
     public ResponseEntity<?> chat(@RequestBody ChatRequest request) {
-        if (geminiApiKey == null || geminiApiKey.equals("YOUR_API_KEY") || geminiApiKey.isEmpty()) {
-            return ResponseEntity.status(500).body(Map.of("response", "API key not configured. Please configure gemini.api.key"));
+        if (openAiApiKey == null || openAiApiKey.equals("YOUR_API_KEY") || openAiApiKey.isEmpty()) {
+            return ResponseEntity.status(500).body(Map.of("response", "API key not configured. Please configure openai.api.key in application.properties"));
         }
 
-        String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=" + geminiApiKey;
+        String url = "https://api.openai.com/v1/chat/completions";
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(openAiApiKey);
 
-        String prompt = "Sen bir şehir plancısı asistanısın. Kullanıcıya yardımcı ol. Kullanıcı sorusu: " + request.getMessage();
+        // Escape JSON properly
+        String safeMessage = request.getMessage().replace("\"", "\\\"").replace("\n", "\\n");
+        String requestBody = "{\n" +
+                "  \"model\": \"gpt-3.5-turbo\",\n" +
+                "  \"messages\": [\n" +
+                "    {\n" +
+                "      \"role\": \"system\",\n" +
+                "      \"content\": \"Sen bir şehir plancısı asistanısın. Kullanıcıya profesyonelce yardımcı ol.\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"role\": \"user\",\n" +
+                "      \"content\": \"" + safeMessage + "\"\n" +
+                "    }\n" +
+                "  ]\n" +
+                "}";
 
-        String requestBody = "{\"contents\":[{\"parts\":[{\"text\":\"" + prompt.replace("\"", "\\\"") + "\"}]}]}";
-        
         HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
 
         try {
             ResponseEntity<Map> response = restTemplate.postForEntity(url, entity, Map.class);
             Map<String, Object> body = response.getBody();
-            if (body != null && body.containsKey("candidates")) {
-                List<Map<String, Object>> candidates = (List<Map<String, Object>>) body.get("candidates");
-                if (!candidates.isEmpty()) {
-                    Map<String, Object> content = (Map<String, Object>) candidates.get(0).get("content");
-                    List<Map<String, Object>> parts = (List<Map<String, Object>>) content.get("parts");
-                    if (!parts.isEmpty()) {
-                        String text = (String) parts.get(0).get("text");
+            if (body != null && body.containsKey("choices")) {
+                List<Map<String, Object>> choices = (List<Map<String, Object>>) body.get("choices");
+                if (!choices.isEmpty()) {
+                    Map<String, Object> messageObj = (Map<String, Object>) choices.get(0).get("message");
+                    if (messageObj != null && messageObj.containsKey("content")) {
+                        String text = (String) messageObj.get("content");
                         return ResponseEntity.ok(Map.of("response", text));
                     }
                 }
             }
-            return ResponseEntity.ok(Map.of("response", "No response from Gemini"));
+            return ResponseEntity.ok(Map.of("response", "No response from OpenAI"));
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body(Map.of("response", "Error communicating with Gemini: " + e.getMessage()));
+            return ResponseEntity.status(500).body(Map.of("response", "Error communicating with OpenAI: " + e.getMessage()));
         }
     }
 
