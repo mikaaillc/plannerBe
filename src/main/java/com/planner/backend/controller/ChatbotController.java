@@ -21,8 +21,8 @@ import java.util.Map;
 @RequestMapping("/api/chat")
 public class ChatbotController {
 
-    @Value("${openai.api.key:YOUR_API_KEY}")
-    private String openAiApiKey;
+    @Value("${groq.api.key:YOUR_API_KEY}")
+    private String groqApiKey;
 
     @Autowired
     private UserRepository userRepository;
@@ -34,20 +34,20 @@ public class ChatbotController {
 
     @PostMapping
     public ResponseEntity<?> chat(@RequestBody ChatRequest request) {
-        if (openAiApiKey == null || openAiApiKey.equals("YOUR_API_KEY") || openAiApiKey.isEmpty()) {
-            return ResponseEntity.status(500).body(Map.of("response", "API key not configured. Please configure openai.api.key in application.properties"));
+        if (groqApiKey == null || groqApiKey.equals("YOUR_API_KEY") || groqApiKey.isEmpty()) {
+            return ResponseEntity.status(500).body(Map.of("response", "API key not configured. Please configure groq.api.key in application.properties or GROQ_API_KEY in environment variables"));
         }
 
-        String url = "https://api.openai.com/v1/chat/completions";
+        String url = "https://api.groq.com/openai/v1/chat/completions";
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setBearerAuth(openAiApiKey);
+        headers.setBearerAuth(groqApiKey);
 
         // Escape JSON properly
         String safeMessage = request.getMessage().replace("\"", "\\\"").replace("\n", "\\n");
         String requestBody = "{\n" +
-                "  \"model\": \"gpt-3.5-turbo\",\n" +
+                "  \"model\": \"llama3-8b-8192\",\n" +
                 "  \"messages\": [\n" +
                 "    {\n" +
                 "      \"role\": \"system\",\n" +
@@ -75,10 +75,10 @@ public class ChatbotController {
                     }
                 }
             }
-            return ResponseEntity.ok(Map.of("response", "No response from OpenAI"));
+            return ResponseEntity.ok(Map.of("response", "No response from Groq"));
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body(Map.of("response", "Error communicating with OpenAI: " + e.getMessage()));
+            return ResponseEntity.status(500).body(Map.of("response", "Error communicating with Groq: " + e.getMessage()));
         }
     }
 
