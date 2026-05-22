@@ -61,6 +61,20 @@ public class DataLoader implements CommandLineRunner {
                     .location("Ankara, Türkiye")
                     .phone("+90 533 222 44 55")
                     .completedWorks("• 2024 – Ankara Çankaya Bisiklet Yolu Entegrasyon Projesi\n• 2023 – Keçiören Yeşil Koridor ve Park Ağı Planlaması\n• 2022 – Mamak Bölgesi Kentsel Yenileme Master Planı")
+                    .isPaid(true)
+                    .subscriptionType("PRO_PLANNER")
+                    .subscriptionExpiryDate(LocalDateTime.now().plusMonths(6))
+                    .build());
+
+            User planner3 = userRepository.save(User.builder()
+                    .username("planner3").password("pass")
+                    .fullName("Mehmet Demir")
+                    .role("ROLE_PLANNER")
+                    .karne("C")
+                    .bio("Yeni mezun şehir plancısı. GİS araçları ve kentsel tasarım yazılımlarına hakimim. Deneyim kazanmak için projelerde görev almayı hedefliyorum.")
+                    .skills("ArcGIS, AutoCAD, SketchUp, Photoshop")
+                    .location("İzmir, Türkiye")
+                    .phone("+90 555 333 11 22")
                     .isPaid(false)
                     .subscriptionType("FREE_PLANNER")
                     .build());
@@ -143,11 +157,24 @@ public class DataLoader implements CommandLineRunner {
                     .title("Kentsel Yenileme ve Ulaşım Entegrasyon Planı")
                     .description("Mevcut banliyö hattı istasyon çevresinin yeniden planlanması.")
                     .jobType("DANIŞMANLIK")
+                    .detailedInfo("Ada/Parsel: 987/65")
                     .priceRangeMin(200000.0)
                     .priceRangeMax(300000.0)
                     .status("OPEN")
                     .creator(entity2)
                     .locationDetails("Bursa / Nilüfer")
+                    .build());
+
+            Job job5 = jobRepository.save(Job.builder()
+                    .title("Yeni Konut Gelişim Alanı Master Planı")
+                    .description("10.000 nüfuslu yeni bir konut gelişim alanı için altyapı, yeşil alan ve konut yerleşim master planının oluşturulması.")
+                    .jobType("PLANLAMA")
+                    .status("OPEN")
+                    .creator(entity1)
+                    .isNazimImarPlani(true)
+                    .hasZeminEtudu(true)
+                    .areaSize(1500.0)
+                    .locationDetails("Antalya / Muratpaşa")
                     .build());
 
             // ---- ÖRNEK TEKLİFLER OLUŞTUR ----
