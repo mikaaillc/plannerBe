@@ -40,8 +40,8 @@ public class OfferController {
             return ResponseEntity.badRequest().body("Invalid sender or job ID");
         }
 
-        if (!sender.isPaid()) {
-            return ResponseEntity.badRequest().body("Ödeme yapmayan plancılar teklif veremez.");
+        if ("FREE_PLANNER".equals(sender.getSubscriptionType()) || !sender.isPaid()) {
+            return ResponseEntity.badRequest().body("Ücretsiz plancılar teklif veremez. Lütfen PRO veya PREMIUM pakete geçin.");
         }
 
         Offer offer = Offer.builder()

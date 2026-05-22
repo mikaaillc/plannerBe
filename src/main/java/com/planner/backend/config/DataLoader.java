@@ -31,7 +31,8 @@ public class DataLoader implements CommandLineRunner {
                     .fullName("Sistem Yöneticisi")
                     .role("ROLE_ADMIN")
                     .isPaid(true)
-                    .subscriptionType("ANNUAL")
+                    .subscriptionType("PRO_ENTITY")
+                    .subscriptionExpiryDate(LocalDateTime.now().plusYears(1))
                     .build());
 
             // ---- PLANCILARI OLUŞTUR ----
@@ -46,7 +47,8 @@ public class DataLoader implements CommandLineRunner {
                     .phone("+90 532 111 22 33")
                     .completedWorks("• 2023 – Kartal Sahil Kentsel Dönüşüm Projesi (8.500 konut, İstanbul)\n• 2022 – Başakşehir Yeni Mahalle İmar Planı Revizyonu (12.000 dönüm)\n• 2021 – Kadıköy Tarihi Çarşı Koruma Alanı Planlaması\n• 2020 – Ataşehir TOKİ Konut Alanı Master Planı")
                     .isPaid(true)
-                    .subscriptionType("ANNUAL")
+                    .subscriptionType("PREMIUM_PLANNER")
+                    .subscriptionExpiryDate(LocalDateTime.now().plusYears(1))
                     .build());
 
             User planner2 = userRepository.save(User.builder()
@@ -60,7 +62,7 @@ public class DataLoader implements CommandLineRunner {
                     .phone("+90 533 222 44 55")
                     .completedWorks("• 2024 – Ankara Çankaya Bisiklet Yolu Entegrasyon Projesi\n• 2023 – Keçiören Yeşil Koridor ve Park Ağı Planlaması\n• 2022 – Mamak Bölgesi Kentsel Yenileme Master Planı")
                     .isPaid(false)
-                    .subscriptionType("FREE")
+                    .subscriptionType("FREE_PLANNER")
                     .build());
 
             // ---- KURUMLARI OLUŞTUR ----
@@ -75,7 +77,8 @@ public class DataLoader implements CommandLineRunner {
                     .phone("+90 212 555 66 77")
                     .completedWorks("• Kartal Marina Rezidans (1.200 konut)\n• Ataşehir AVM ve Ofis Kompleksi\n• Başakşehir Toplu Konut Projesi (3.500 konut)")
                     .isPaid(true)
-                    .subscriptionType("MONTHLY")
+                    .subscriptionType("PRO_ENTITY")
+                    .subscriptionExpiryDate(LocalDateTime.now().plusYears(1))
                     .build());
 
             User entity2 = userRepository.save(User.builder()
@@ -88,7 +91,7 @@ public class DataLoader implements CommandLineRunner {
                     .location("Ankara, Türkiye")
                     .phone("+90 312 444 55 66")
                     .isPaid(false)
-                    .subscriptionType("FREE")
+                    .subscriptionType("FREE_ENTITY")
                     .build());
 
             // ---- İŞ (JOB) OLUŞTUR ----

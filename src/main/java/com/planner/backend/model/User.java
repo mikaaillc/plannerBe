@@ -51,5 +51,8 @@ public class User {
     private boolean isPaid = false;
 
     @Column
-    private String subscriptionType = "FREE"; // FREE, MONTHLY, ANNUAL
+    private String subscriptionType; // "FREE_ENTITY", "PRO_ENTITY", "FREE_PLANNER", "PRO_PLANNER", "PREMIUM_PLANNER"
+
+    @Column
+    private java.time.LocalDateTime subscriptionExpiryDate;
 }
