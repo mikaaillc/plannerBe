@@ -3,10 +3,12 @@ package com.planner.backend.config;
 import com.planner.backend.model.Comment;
 import com.planner.backend.model.Job;
 import com.planner.backend.model.Offer;
+import com.planner.backend.model.PartnerOffer;
 import com.planner.backend.model.User;
 import com.planner.backend.repository.CommentRepository;
 import com.planner.backend.repository.JobRepository;
 import com.planner.backend.repository.OfferRepository;
+import com.planner.backend.repository.PartnerOfferRepository;
 import com.planner.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -21,6 +23,7 @@ public class DataLoader implements CommandLineRunner {
     @Autowired private JobRepository jobRepository;
     @Autowired private OfferRepository offerRepository;
     @Autowired private CommentRepository commentRepository;
+    @Autowired private PartnerOfferRepository partnerOfferRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -62,7 +65,7 @@ public class DataLoader implements CommandLineRunner {
                     .phone("+90 533 222 44 55")
                     .completedWorks("• 2024 – Ankara Çankaya Bisiklet Yolu Entegrasyon Projesi\n• 2023 – Keçiören Yeşil Koridor ve Park Ağı Planlaması\n• 2022 – Mamak Bölgesi Kentsel Yenileme Master Planı")
                     .isPaid(true)
-                    .subscriptionType("PRO_PLANNER")
+                    .subscriptionType("PREMIUM_PLANNER")
                     .subscriptionExpiryDate(LocalDateTime.now().plusMonths(6))
                     .build());
 
@@ -249,6 +252,16 @@ public class DataLoader implements CommandLineRunner {
                     .user(entity1)
                     .text("Teklif kabul edildi. Projeye en kısa sürede başlamamızı bekliyoruz. Sözleşme taslağını hazırlıyoruz.")
                     .createdAt(LocalDateTime.now().minusHours(2))
+                    .build());
+
+            // ---- ÖRNEK PARTNERLİK TEKLİFİ OLUŞTUR ----
+            partnerOfferRepository.save(PartnerOffer.builder()
+                    .sender(planner1)
+                    .receiver(planner2)
+                    .job(job1)
+                    .message("Merhaba Ayşe Hanım, Kartal İmar Planı projesi için B grubu karnenize ve yeşil altyapı deneyiminize ihtiyacım var. Birlikte çalışabilir miyiz?")
+                    .proposedFee(50000.0)
+                    .status("PENDING")
                     .build());
         }
     }
