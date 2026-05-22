@@ -1,11 +1,14 @@
 package com.planner.backend.controller;
 
 import com.planner.backend.model.Comment;
+import com.planner.backend.model.Job;
 import com.planner.backend.model.Offer;
 import com.planner.backend.model.User;
 import com.planner.backend.repository.CommentRepository;
+import com.planner.backend.repository.JobRepository;
 import com.planner.backend.repository.OfferRepository;
 import com.planner.backend.repository.UserRepository;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,52 +24,48 @@ public class OfferController {
 
     @Autowired
     private UserRepository userRepository;
+    
+    @Autowired
+    private JobRepository jobRepository;
 
     @Autowired
     private CommentRepository commentRepository;
 
-    @PostMapping
-    public ResponseEntity<?> createOffer(@RequestBody OfferRequest request) {
+    @PostMapping("/job/{jobId}")
+    public ResponseEntity<?> createOffer(@PathVariable Long jobId, @RequestBody OfferRequest request) {
         User sender = userRepository.findById(request.getSenderId()).orElse(null);
-        User receiver = userRepository.findById(request.getReceiverId()).orElse(null);
+        Job job = jobRepository.findById(jobId).orElse(null);
 
-        if (sender == null || receiver == null) {
-            return ResponseEntity.badRequest().body("Invalid sender or receiver ID");
+        if (sender == null || job == null) {
+            return ResponseEntity.badRequest().body("Invalid sender or job ID");
         }
 
         if (!sender.isPaid()) {
-            return ResponseEntity.badRequest().body("Ödeme yapmayan kullanıcılar teklif veremez.");
-        }
-
-        if ("ROLE_ENTITY".equals(receiver.getRole()) && !receiver.isPaid()) {
-            return ResponseEntity.badRequest().body("Ödeme yapmayan tüzel kişiler teklif alamaz.");
+            return ResponseEntity.badRequest().body("Ödeme yapmayan plancılar teklif veremez.");
         }
 
         Offer offer = Offer.builder()
                 .title(request.getTitle())
                 .description(request.getDescription())
                 .proposedPrice(request.getProposedPrice())
+                .partnerKarnes(request.getPartnerKarnes())
                 .status("PENDING")
                 .sender(sender)
-                .receiver(receiver)
+                .job(job)
                 .build();
 
         offerRepository.save(offer);
         return ResponseEntity.ok(offer);
     }
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Offer>> getUserOffers(@PathVariable Long userId) {
-        User user = userRepository.findById(userId).orElse(null);
-        if (user == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        if ("ROLE_PLANNER".equals(user.getRole())) {
-            return ResponseEntity.ok(offerRepository.findByReceiverId(userId));
-        } else {
-            return ResponseEntity.ok(offerRepository.findBySenderId(userId));
-        }
+    @GetMapping("/job/{jobId}")
+    public ResponseEntity<List<Offer>> getJobOffers(@PathVariable Long jobId) {
+        return ResponseEntity.ok(offerRepository.findByJobId(jobId));
+    }
+    
+    @GetMapping("/my-accepted-offers/{plannerId}")
+    public ResponseEntity<List<Offer>> getAcceptedOffers(@PathVariable Long plannerId) {
+        return ResponseEntity.ok(offerRepository.findBySenderIdAndStatus(plannerId, "ACCEPTED"));
     }
 
     @GetMapping("/{id}")
@@ -76,16 +75,20 @@ public class OfferController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PatchMapping("/{id}/status")
-    public ResponseEntity<?> updateStatus(@PathVariable Long id, @RequestBody StatusUpdateRequest request) {
+    @PutMapping("/{id}/accept")
+    public ResponseEntity<?> acceptOffer(@PathVariable Long id) {
         Offer offer = offerRepository.findById(id).orElse(null);
         if (offer == null) return ResponseEntity.notFound().build();
 
-        offer.setStatus(request.getStatus());
-        if (request.getProposedPrice() != null) {
-            offer.setProposedPrice(request.getProposedPrice());
-        }
+        offer.setStatus("ACCEPTED");
         offerRepository.save(offer);
+        
+        Job job = offer.getJob();
+        job.setStatus("IN_PROGRESS");
+        jobRepository.save(job);
+        
+        // Note: Could reject other offers for the same job here.
+
         return ResponseEntity.ok(offer);
     }
 
@@ -113,41 +116,17 @@ public class OfferController {
     }
 }
 
+@Data
 class OfferRequest {
     private String title;
     private String description;
     private Double proposedPrice;
     private Long senderId;
-    private Long receiverId;
-
-    public String getTitle() { return title; }
-    public void setTitle(String title) { this.title = title; }
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
-    public Double getProposedPrice() { return proposedPrice; }
-    public void setProposedPrice(Double proposedPrice) { this.proposedPrice = proposedPrice; }
-    public Long getSenderId() { return senderId; }
-    public void setSenderId(Long senderId) { this.senderId = senderId; }
-    public Long getReceiverId() { return receiverId; }
-    public void setReceiverId(Long receiverId) { this.receiverId = receiverId; }
+    private String partnerKarnes;
 }
 
-class StatusUpdateRequest {
-    private String status;
-    private Double proposedPrice;
-
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
-    public Double getProposedPrice() { return proposedPrice; }
-    public void setProposedPrice(Double proposedPrice) { this.proposedPrice = proposedPrice; }
-}
-
+@Data
 class CommentRequest {
     private Long userId;
     private String text;
-
-    public Long getUserId() { return userId; }
-    public void setUserId(Long userId) { this.userId = userId; }
-    public String getText() { return text; }
-    public void setText(String text) { this.text = text; }
 }

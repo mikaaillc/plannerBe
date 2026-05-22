@@ -27,11 +27,14 @@ public class Offer {
 
     @ManyToOne
     @JoinColumn(name = "sender_id", nullable = false)
-    private User sender;
+    private User sender; // The planner making the offer
 
     @ManyToOne
-    @JoinColumn(name = "receiver_id", nullable = false)
-    private User receiver;
+    @JoinColumn(name = "job_id", nullable = false)
+    private Job job; // The job this offer belongs to
+    
+    @Column
+    private String partnerKarnes; // Comma-separated list of partner karnes, e.g. "A,B"
 
     private LocalDateTime createdAt;
 

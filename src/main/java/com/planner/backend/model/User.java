@@ -25,6 +25,12 @@ public class User {
 
     @Column(nullable = false)
     private String role; // "ROLE_PLANNER" or "ROLE_ENTITY"
+    
+    @Column
+    private String entityType; // "KAMU" or "TUZEL" (if role is ROLE_ENTITY)
+    
+    @Column
+    private String karne; // "A", "B", "C", "D", "E", "F" (if role is ROLE_PLANNER)
 
     @Column(columnDefinition = "TEXT")
     private String completedWorks; // Plancıların yaptığı işler

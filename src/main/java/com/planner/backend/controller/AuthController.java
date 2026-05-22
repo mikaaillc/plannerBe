@@ -34,6 +34,8 @@ public class AuthController {
                 .password(request.getPassword())
                 .fullName(request.getFullName())
                 .role(request.getRole())
+                .entityType(request.getEntityType())
+                .karne(request.getKarne())
                 .completedWorks(request.getCompletedWorks())
                 .build();
         userRepository.save(user);
@@ -53,5 +55,7 @@ class RegisterRequest {
     private String password;
     private String fullName;
     private String role;
+    private String entityType;
+    private String karne;
     private String completedWorks;
 }
