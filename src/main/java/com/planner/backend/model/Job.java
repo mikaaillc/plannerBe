@@ -36,6 +36,32 @@ public class Job {
     @Column(columnDefinition = "TEXT")
     private String detailedInfo; // Ada/Parsel vs.
 
+    // --- Yeni Eklenen Planlama Detay Alanları ---
+    @Column
+    private Boolean isNazimImarPlani;
+
+    @Column
+    private Boolean isUygulamaImarPlani;
+
+    @Column
+    private Boolean isParselasyon;
+
+    @Column
+    private Boolean hasZeminEtudu;
+
+    @Column
+    private Boolean hasHalihazirHarita;
+
+    @Column
+    private Boolean hasKurumGorusleri;
+
+    @Column
+    private Double areaSize; // Hektar
+
+    @Column
+    private String locationDetails; // İl/İlçe/Mahalle
+    // ------------------------------------------
+
     @Column
     private String status; // "OPEN", "IN_PROGRESS", "COMPLETED", "CANCELLED"
 

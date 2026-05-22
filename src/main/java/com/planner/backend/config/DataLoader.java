@@ -99,6 +99,14 @@ public class DataLoader implements CommandLineRunner {
                     .minKarne("B")
                     .status("OPEN")
                     .creator(entity1)
+                    .isNazimImarPlani(true)
+                    .isUygulamaImarPlani(true)
+                    .hasZeminEtudu(true)
+                    .hasHalihazirHarita(true)
+                    .hasKurumGorusleri(false)
+                    .isParselasyon(false)
+                    .areaSize(500.0)
+                    .locationDetails("İstanbul / Kartal / Uğur Mumcu")
                     .build());
                     
             Job job2 = jobRepository.save(Job.builder()
@@ -111,6 +119,7 @@ public class DataLoader implements CommandLineRunner {
                     .minKarne("C")
                     .status("OPEN")
                     .creator(entity2)
+                    .locationDetails("Ankara / Çankaya")
                     .build());
 
             Job job3 = jobRepository.save(Job.builder()
@@ -119,6 +128,12 @@ public class DataLoader implements CommandLineRunner {
                     .jobType("PLANLAMA")
                     .status("OPEN")
                     .creator(entity1)
+                    .isUygulamaImarPlani(true)
+                    .hasZeminEtudu(false)
+                    .hasHalihazirHarita(true)
+                    .isParselasyon(true)
+                    .areaSize(120.5)
+                    .locationDetails("İzmir / Bornova")
                     .build());
 
             Job job4 = jobRepository.save(Job.builder()
@@ -129,6 +144,7 @@ public class DataLoader implements CommandLineRunner {
                     .priceRangeMax(300000.0)
                     .status("OPEN")
                     .creator(entity2)
+                    .locationDetails("Bursa / Nilüfer")
                     .build());
 
             // ---- ÖRNEK TEKLİFLER OLUŞTUR ----
@@ -207,4 +223,3 @@ public class DataLoader implements CommandLineRunner {
         }
     }
 }
-
